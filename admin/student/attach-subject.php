@@ -90,7 +90,7 @@ echo getAllSubjectsCheckboxes($student_data['student_id']);
                                 <a href="detach-subject.php?subject_id=<?= urlencode($subject['subject_id']) ?>&subject_name=<?= urlencode($subject['subject_name']) ?>&student_id=<?= $student_data['student_id']?>&firstname=<?= $student_data['first_name']?>&lastname=<?= $student_data['last_name']?>" class="btn btn-danger btn-sm">Detach Subject</a>
 
                                 <!-- Delete Button (Red) -->
-                                <a href="assign-grade.php?subject_id=<?= urlencode($subject['subject_id']) ?>" class="btn btn-success btn-sm">Assign Grade</a>
+                                <a href="assign-grade.php?subject_id=<?= urlencode($subject['subject_id']) ?>&subject_name=<?= urlencode($subject['subject_name']) ?>&student_id=<?= $student_data['student_id']?>&firstname=<?= $student_data['first_name']?>&lastname=<?= $student_data['last_name']?>" class="btn btn-success btn-sm">Assign Grade</a>
                                 
                                 
                             
