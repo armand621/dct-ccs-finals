@@ -526,31 +526,28 @@ function checkDuplicateStudentData($student_id) {
 
 
 
-function checkDuplicateStudentForEdit($student_id) {
-    // Get database connection
-    $conn = getConnection();
+function deleteStudent($student_id, $redirectPage) {
+    try {
+        // Get the database connection
+        $pdo = getConnection();
 
-    // Query to check if the subject_code already exists in the database
-    $sql = "SELECT * FROM students WHERE student_id = :student_id";
-    $stmt = $conn->prepare($sql);
+        // Prepare the SQL query to delete the subject
+        $sql = "DELETE FROM students WHERE student_id = :student_id";
+        $stmt = $pdo->prepare($sql);
 
-    // Bind parameters
-    $stmt->bindParam(':student_id', $student_id);
-    
-    // Execute the query
-    $stmt->execute();
+        // Bind the parameter
+        $stmt->bindParam(':student_id', $student_id, PDO::PARAM_STR);
 
-    // Fetch the results
-    $existing_student = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    // If a subject exists with the same code or name, return an error
-    if ($existing_student) {
-        return ["Duplicate student id found: The student id already exists."];
+        // Execute the query
+        if ($stmt->execute()) {
+            echo "<script>window.location.href = '$redirectPage';</script>";
+        } else {
+            return "Failed to delete the subject with code $student_id.";
+        }
+    } catch (PDOException $e) {
+        return "Error: " . $e->getMessage();
     }
-
-    return [];
 }
-
 
 
 

@@ -89,7 +89,7 @@ include '../partials/side-bar.php';
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="3" class="text-center">No subjects found.</td>
+                        <td colspan="4" class="text-center">No students found.</td>
                     </tr>
                 <?php endif; ?>
                 
