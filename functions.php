@@ -348,6 +348,126 @@ function deleteSubject($subject_code, $redirectPage) {
 
 
 
+
+function fetchStudents() {
+    // Get the database connection
+    $conn = getConnection();
+
+    try {
+        // Prepare SQL query to fetch all subjects
+        $sql = "SELECT * FROM students";
+        $stmt = $conn->prepare($sql);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Fetch all subjects as an associative array
+        $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Return the list of subjects
+        return $subjects;
+    } catch (PDOException $e) {
+        // Return an empty array in case of error
+        return [];
+    }
+}
+
+
+function addStudent($student_id, $student_firstname, $student_lastname){
+
+    $validateStudentData = validateStudentData($student_id, $student_firstname, $student_lastname);
+    $checkDuplicateStudentData = checkDuplicateStudentData($student_id);
+
+    if(count($validateStudentData) > 0){
+        echo displayErrors($validateStudentData);
+        return;
+    }
+
+    if(count($checkDuplicateStudentData) == 1){
+        echo displayErrors($checkDuplicateStudentData);
+        return;
+    }
+
+
+    $conn = getConnection();
+
+    try {
+        // Prepare SQL query to insert subject into the database
+        $sql = "INSERT INTO students (student_id, first_name, last_name) VALUES (:student_id, :first_name, :last_name)";
+        $stmt = $conn->prepare($sql);
+
+        // Bind parameters to the SQL query
+        $stmt->bindParam(':student_id', $student_id);
+        $stmt->bindParam(':first_name', $student_firstname);
+        $stmt->bindParam(':last_name', $student_lastname);
+
+        // Execute the query
+        if ($stmt->execute()) {
+
+            return true; // Student successfully added
+        } else {
+            return "Failed to add subject."; // Query execution failed
+        }
+    } catch (PDOException $e) {
+        // Return error message if the query fails
+        return "Error: " . $e->getMessage();
+    }
+
+}
+
+
+
+//for adding student validation
+function validateStudentData($student_id, $student_firstname, $student_lastname ) {
+    $errors = [];
+
+    // Check if subject_code is empty
+    if (empty($student_id)) {
+        $errors[] = "Student id is required.";
+    }
+
+    if (empty($student_firstname)) {
+        $errors[] = "Student firstname is required.";
+    }
+
+    // Check if subject_name is empty
+    if (empty($student_lastname)) {
+        $errors[] = "Student lastname is required.";
+    }
+
+    return $errors;
+}
+
+
+function checkDuplicateStudentData($student_id) {
+    // Get database connection
+    $conn = getConnection();
+
+    // Query to check if the subject_code already exists in the database
+    $sql = "SELECT * FROM students WHERE student_id = :student_id";
+    $stmt = $conn->prepare($sql);
+
+    // Bind parameters
+    $stmt->bindParam(':student_id', $student_id);
+    
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the results
+    $existing_student = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // If a subject exists with the same code or name, return an error
+    if ($existing_student) {
+        return ["Duplicate student id found: The student id already exists."];
+    }
+
+    return [];
+}
+
+
+
+
+
 function isPost(){
     return $_SERVER['REQUEST_METHOD'] == "POST";
 }
