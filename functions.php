@@ -552,6 +552,150 @@ function deleteStudent($student_id, $redirectPage) {
 
 
 
+
+function getAllSubjectsCheckboxes($student_id) {
+    // Get database connection
+    $conn = getConnection(); 
+
+    // SQL query to fetch all subjects that are not assigned to the student
+    $sql = "SELECT subject_code, subject_name 
+            FROM subjects 
+            WHERE subject_code NOT IN (SELECT subject_id FROM students_subjects WHERE student_id = :student_id)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':student_id', $student_id);
+    $stmt->execute();
+
+    // Fetch all subjects
+    $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Generate the HTML for checkboxes
+    $checkboxes = '';
+    foreach ($subjects as $subject) {
+        $checkboxes .= '<div class="form-check">';
+        $checkboxes .= '<input class="form-check-input" type="checkbox" name="subjects[]" value="' . htmlspecialchars($subject['subject_code']) . '" id="subject_' . htmlspecialchars($subject['subject_code']) . '">';
+        $checkboxes .= '<label class="form-check-label" for="subject_' . htmlspecialchars($subject['subject_code']) . '">';
+        $checkboxes .= htmlspecialchars($subject['subject_code']) . ' - ' . htmlspecialchars($subject['subject_name']);
+        $checkboxes .= '</label>';
+        $checkboxes .= '</div>';
+    }
+
+    // Return the HTML checkboxes
+    return $checkboxes;
+}
+
+
+
+
+function fetchAssignSubjects($student_id) {
+    // Get the database connection
+    $conn = getConnection();
+
+    try {
+        // Prepare SQL query to fetch all subjects
+        $sql = "SELECT asign.subject_id, subs.subject_name, asign.grade FROM students_subjects asign JOIN subjects subs ON asign.subject_id = subs.subject_code";
+        $stmt = $conn->prepare($sql);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Fetch all subjects as an associative array
+        $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Return the list of subjects
+        return $subjects;
+    } catch (PDOException $e) {
+        // Return an empty array in case of error
+        return [];
+    }
+}
+
+
+
+function assignSubjectsToStudent($student_id, $subject_codes) {
+    $st_id = intval($student_id); // Ensure the student_id is an integer
+    $numSubjectCodes = array();
+
+    // Convert subject codes to integers
+    for ($i = 0; $i < count($subject_codes); $i++) {
+        $numSubjectCodes[$i] = intval($subject_codes[$i]);
+    }
+
+    try {
+        // Get the database connection
+        $conn = getConnection();
+
+        // Loop through each subject_code
+        for ($i = 0; $i < count($subject_codes); $i++) {
+            // Check if the subject is already assigned to the student
+            $sql_check = "SELECT COUNT(*) FROM students_subjects WHERE student_id = :student_id AND subject_id = :subject_id";
+            $stmt_check = $conn->prepare($sql_check);
+
+            // Bind parameters for the check query
+            $stmt_check->bindParam(':student_id', $st_id, PDO::PARAM_INT);
+            $stmt_check->bindParam(':subject_id', $numSubjectCodes[$i], PDO::PARAM_INT);
+            $stmt_check->execute();
+
+            // Fetch the result (count of matching records)
+            $existing = $stmt_check->fetchColumn();
+
+            // If the subject is not assigned already, proceed to insert
+            if ($existing == 0) {
+                $sql = "INSERT INTO students_subjects (student_id, subject_id, grade) 
+                        VALUES (:student_id, :subject_id, 0.00)";
+                $stmt = $conn->prepare($sql);
+
+                // Bind parameters for the insert query
+                $stmt->bindParam(':student_id', $st_id, PDO::PARAM_INT);
+                $stmt->bindParam(':subject_id', $numSubjectCodes[$i], PDO::PARAM_INT);
+                
+                // Execute the query
+                $stmt->execute();
+            }
+        }
+
+        // Success message after all subjects are assigned
+        echo "Subjects assigned successfully!";
+    } catch (PDOException $e) {
+        return "Error: " . $e->getMessage();
+    }
+}
+
+
+// function assignSubjectsToStudent($student_id, $subject_codes) {
+
+//     $st_id = intval($student_id);
+//     $numSubjectCodes = array();
+//     for($i = 0; $i < count($subject_codes); $i++){
+//         $numSubjectCodes[$i] = intval($subject_codes[$i]);
+//     }
+
+
+//     try {
+//         // Get the database connection
+//         $conn = getConnection();
+    
+//         // Loop through each subject_code and insert into the students_subjects table
+//         for($i = 0; $i < count($subject_codes); $i++){
+//             $sql = "INSERT INTO students_subjects (student_id, subject_id, grade) 
+//                     VALUES (:student_id, :subject_id, 0.00)";
+//             $stmt = $conn->prepare($sql);
+    
+//             // Bind parameters
+//             $stmt->bindParam(':student_id', $st_id, PDO::PARAM_INT);
+//             $stmt->bindParam(':subject_id', $numSubjectCodes[$i], PDO::PARAM_INT);    
+//             // Execute the query
+//             $stmt->execute();
+//         }
+    
+//         echo "Subjects assigned successfully!";
+//     } catch (PDOException $e) {
+//         return "Error: " . $e->getMessage();
+//     }
+// }
+
+
+
+
 function isPost(){
     return $_SERVER['REQUEST_METHOD'] == "POST";
 }
