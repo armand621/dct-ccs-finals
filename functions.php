@@ -417,6 +417,66 @@ function addStudent($student_id, $student_firstname, $student_lastname){
 
 
 
+function getStudentById($student_id) {
+    $pdo = getConnection();
+    $query = "SELECT * FROM students WHERE student_id = :student_id";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute([':student_id' => $student_id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+
+
+function updateStudent($student_id, $student_firstname, $student_lastname, $redirectPage){
+
+
+    $validateStudentData = validateStudentData($student_id, $student_firstname, $student_lastname);
+    //$checkDuplicateStudentData = checkDuplicateStudentForEdit($student_id);
+
+    if(count($validateStudentData) > 0){
+        echo displayErrors($validateStudentData);
+        return;
+    }
+
+    // if(count($checkDuplicateStudentData) == 1){
+    //     echo displayErrors($checkDuplicateStudentData);
+    //     return;
+    // }
+
+
+
+    try {
+        // Get the database connection
+        $pdo = getConnection();
+
+        // Prepare the SQL query for updating the subject
+        $sql = "UPDATE students SET first_name = :firstname, last_name = :lastname  WHERE student_id = :student_id";
+        $stmt = $pdo->prepare($sql);
+
+        // Bind the parameters
+        $stmt->bindParam(':firstname', $student_firstname, PDO::PARAM_STR);
+        $stmt->bindParam(':lastname', $student_lastname, PDO::PARAM_STR);
+        $stmt->bindParam(':student_id', $student_id, PDO::PARAM_STR);
+
+        // Execute the query
+        if ($stmt->execute()) {
+            echo "<script>window.location.href = '$redirectPage';</script>";
+        } else {
+            //echo displayErrors(["Failed to update subject!"]);
+            return 'Failed to update subject';
+        }
+    } catch (PDOException $e) {
+        // echo displayErrors(["Error: " . $e->getMessage()]);
+        return "Error: " . $e->getMessage();
+    }
+}
+
+
+
+
+
+
 //for adding student validation
 function validateStudentData($student_id, $student_firstname, $student_lastname ) {
     $errors = [];
@@ -440,6 +500,33 @@ function validateStudentData($student_id, $student_firstname, $student_lastname 
 
 
 function checkDuplicateStudentData($student_id) {
+    // Get database connection
+    $conn = getConnection();
+
+    // Query to check if the subject_code already exists in the database
+    $sql = "SELECT * FROM students WHERE student_id = :student_id";
+    $stmt = $conn->prepare($sql);
+
+    // Bind parameters
+    $stmt->bindParam(':student_id', $student_id);
+    
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the results
+    $existing_student = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // If a subject exists with the same code or name, return an error
+    if ($existing_student) {
+        return ["Duplicate student id found: The student id already exists."];
+    }
+
+    return [];
+}
+
+
+
+function checkDuplicateStudentForEdit($student_id) {
     // Get database connection
     $conn = getConnection();
 
