@@ -2,6 +2,10 @@
 require '../functions.php';
 guardDashboard();
 
+$logoutPage = 'logout.php';
+require './partials/header.php';
+require './partials/side-bar.php';
+
 ?>
 
 <!-- Template Files here -->
@@ -44,3 +48,7 @@ guardDashboard();
     </div>    
 </main>
 <!-- Template Files here -->
+ <?php
+    require './partials/footer.php';
+
+ ?>
