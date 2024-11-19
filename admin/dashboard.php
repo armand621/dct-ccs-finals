@@ -3,6 +3,8 @@ require '../functions.php';
 guardDashboard();
 
 $logoutPage = 'logout.php';
+$subjectPage = './subject/add.php';
+$studentPage = './student/register.php';
 require './partials/header.php';
 require './partials/side-bar.php';
 
