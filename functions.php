@@ -661,6 +661,30 @@ function assignSubjectsToStudent($student_id, $subject_codes) {
 }
 
 
+function detachSubject($student_id, $subject_id, $redirectPage) {
+    try {
+        // Get the database connection
+        $pdo = getConnection();
+
+        // Prepare the SQL query to delete the subject
+        $sql = "DELETE FROM students_subjects WHERE student_id = :student_id && subject_id = :subject_id";
+        $stmt = $pdo->prepare($sql);
+
+        // Bind the parameter
+        $stmt->bindParam(':student_id', $student_id, PDO::PARAM_STR);
+        $stmt->bindParam(':subject_id', $subject_id, PDO::PARAM_STR);
+
+        // Execute the query
+        if ($stmt->execute()) {
+            echo "<script>window.location.href = '$redirectPage';</script>";
+        } else {
+            return "Failed to delete the subject with code $student_id.";
+        }
+    } catch (PDOException $e) {
+        return "Error: " . $e->getMessage();
+    }
+}
+
 // function assignSubjectsToStudent($student_id, $subject_codes) {
 
 //     $st_id = intval($student_id);
@@ -694,6 +718,10 @@ function assignSubjectsToStudent($student_id, $subject_codes) {
 // }
 
 
+
+function GETdata($key){
+    return $_GET["$key"];
+}
 
 
 function isPost(){
