@@ -3,6 +3,8 @@ include '../../functions.php'; // Include the functions
 include '../partials/header.php';
 
 $logoutPage = '../logout.php';
+$dashboardPage = '../dashboard.php';
+$studentPage = '../student/register.php';
 include '../partials/side-bar.php';
 ?>
 
