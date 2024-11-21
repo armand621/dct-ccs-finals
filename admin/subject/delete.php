@@ -1,11 +1,14 @@
 <?php
 include '../../functions.php'; // Include the functions
+$pageTitle = 'Delete a Subject';
 include '../partials/header.php';
 
 $logoutPage = '../logout.php';
 $dashboardPage = '../dashboard.php';
 $studentPage = '../student/register.php';
 $subjectPage = './add.php';
+$isSubjectsSelected = 'fw-bold';
+
 include '../partials/side-bar.php';
 
 $subject_data = getSubjectByCode($_GET['subject_code']);
@@ -25,7 +28,7 @@ if(isPost()){
 <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../dashboard.php">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="add.php">Add subject</a></li>
+            <li class="breadcrumb-item"><a href="add.php">Add Subject</a></li>
             <li class="breadcrumb-item active" aria-current="page">Delete Subject</li>
         </ol>
     </nav>

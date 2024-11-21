@@ -1,11 +1,14 @@
 <?php
 include '../../functions.php'; // Include the functions
+$pageTitle = 'Edit a Subject';
 include '../partials/header.php';
 
 $logoutPage = '../logout.php';
 $dashboardPage = '../dashboard.php';
 $studentPage = '../student/register.php';
 $subjectPage = './add.php';
+$isSubjectsSelected = 'fw-bold';
+
 include '../partials/side-bar.php';
 
 $subject_data = getSubjectByCode($_GET['subject_code']);
@@ -41,7 +44,7 @@ $subject_data = getSubjectByCode($_GET['subject_code']);
         <form method="POST">
             <!-- Subject Code (disabled) -->
             <div class="mb-3">
-                <label for="subject_code" class="form-label">Subject Code</label>
+                <label for="subject_code" class="form-label">Subject ID</label>
                 <input type="text" class="form-control" id="subject_code" name="subject_code" value="<?= htmlspecialchars($subject_data['subject_code']) ?>" disabled>
             </div>
 
