@@ -415,23 +415,37 @@ function deleteSubject($subject_code, $redirectPage) {
         // Get the database connection
         $pdo = getConnection();
 
-        // Prepare the SQL query to delete the subject
-        $sql = "DELETE FROM subjects WHERE subject_code = :subject_code";
-        $stmt = $pdo->prepare($sql);
+        // Start a transaction
+        $pdo->beginTransaction();
 
-        // Bind the parameter
-        $stmt->bindParam(':subject_code', $subject_code, PDO::PARAM_STR);
+        // Prepare the SQL query to delete from students_subjects
+        $sql1 = "DELETE FROM students_subjects WHERE subject_id = :subject_code";
+        $stmt1 = $pdo->prepare($sql1);
+        $stmt1->bindParam(':subject_code', $subject_code, PDO::PARAM_STR);
+        $stmt1->execute();
 
-        // Execute the query
-        if ($stmt->execute()) {
+        // Prepare the SQL query to delete from subjects
+        $sql2 = "DELETE FROM subjects WHERE subject_code = :subject_code";
+        $stmt2 = $pdo->prepare($sql2);
+        $stmt2->bindParam(':subject_code', $subject_code, PDO::PARAM_STR);
+
+        // Execute the query for subjects and commit the transaction
+        if ($stmt2->execute()) {
+            $pdo->commit();
             echo "<script>window.location.href = '$redirectPage';</script>";
         } else {
+            $pdo->rollBack();
             return "Failed to delete the subject with code $subject_code.";
         }
     } catch (PDOException $e) {
+        // Roll back in case of error
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         return "Error: " . $e->getMessage();
     }
 }
+
 
 
 
@@ -620,23 +634,37 @@ function deleteStudent($student_id, $redirectPage) {
         // Get the database connection
         $pdo = getConnection();
 
-        // Prepare the SQL query to delete the subject
-        $sql = "DELETE FROM students WHERE student_id = :student_id";
-        $stmt = $pdo->prepare($sql);
+        // Start a transaction
+        $pdo->beginTransaction();
 
-        // Bind the parameter
-        $stmt->bindParam(':student_id', $student_id, PDO::PARAM_STR);
+        // Prepare the SQL query to delete from students_subjects
+        $sql1 = "DELETE FROM students_subjects WHERE student_id = :student_id";
+        $stmt1 = $pdo->prepare($sql1);
+        $stmt1->bindParam(':student_id', $student_id, PDO::PARAM_STR);
+        $stmt1->execute();
 
-        // Execute the query
-        if ($stmt->execute()) {
+        // Prepare the SQL query to delete from students
+        $sql2 = "DELETE FROM students WHERE student_id = :student_id";
+        $stmt2 = $pdo->prepare($sql2);
+        $stmt2->bindParam(':student_id', $student_id, PDO::PARAM_STR);
+
+        // Execute the query for students and commit the transaction
+        if ($stmt2->execute()) {
+            $pdo->commit();
             echo "<script>window.location.href = '$redirectPage';</script>";
         } else {
-            return "Failed to delete the subject with code $student_id.";
+            $pdo->rollBack();
+            return "Failed to delete the student with ID $student_id.";
         }
     } catch (PDOException $e) {
+        // Roll back in case of error
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         return "Error: " . $e->getMessage();
     }
 }
+
 
 
 

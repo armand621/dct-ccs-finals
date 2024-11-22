@@ -1,10 +1,13 @@
 <?php
 include '../../functions.php'; // Include the functions
+$pageTitle = 'Add a Subject';
 include '../partials/header.php';
 
 $logoutPage = '../logout.php';
 $dashboardPage = '../dashboard.php';
 $studentPage = '../student/register.php';
+$isSubjectsSelected = 'fw-bold';
+
 include '../partials/side-bar.php';
 ?>
 
@@ -13,7 +16,7 @@ include '../partials/side-bar.php';
        
         <!-- Content Area -->
         <div class="col-md-9 col-lg-10">
-        <h3 class="text-left mb-5 mt-5">Add A New Subject</h1>
+        <h3 class="text-left mb-5 mt-5">Add a New Subject</h1>
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">

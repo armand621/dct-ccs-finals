@@ -1,11 +1,14 @@
 <?php
 include '../../functions.php'; // Include the functions
+$pageTitle = 'Edit Student Info';
 include '../partials/header.php';
 
 $logoutPage = '../logout.php';
 $dashboardPage = '../dashboard.php';
-$studentPage = '../student/register.php';
-$subjectPage = './subject/add.php';
+$studentPage = './register.php';
+$subjectPage = '../subject/add.php';
+$isStudentsSelected = 'fw-bold';
+
 include '../partials/side-bar.php';
 
 
@@ -19,7 +22,7 @@ include '../partials/side-bar.php';
         <ol class="breadcrumb">
             <li class="breadcrumb-item" aria-current="page"><a href="../dashboard.php">Dashboard</a></li>
             <li class="breadcrumb-item"><a href="register.php">Register Student</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Edit Subject</li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Student</li>
         </ol>
     </nav>
 

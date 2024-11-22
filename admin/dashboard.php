@@ -2,9 +2,12 @@
 require '../functions.php';
 guardDashboard();
 
+$pageTitle = 'Dashboard';
+$customDashboard = '<link rel="stylesheet" href="partials/custom-dashboard.css">';
 $logoutPage = 'logout.php';
 $subjectPage = './subject/add.php';
 $studentPage = './student/register.php';
+$isDashboardSelected = 'fw-bold';
 require './partials/header.php';
 require './partials/side-bar.php';
 

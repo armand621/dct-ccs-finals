@@ -1,11 +1,14 @@
 <?php
 include '../../functions.php'; // Include the functions
+$pageTitle = 'Delete a Student';
 include '../partials/header.php';
 
 $logoutPage = '../logout.php';
 $dashboardPage = '../dashboard.php';
-$studentPage = '../student/register.php';
-$subjectPage = './subject/add.php';
+$studentPage = './register.php';
+$subjectPage = '../subject/add.php';
+$isStudentsSelected = 'fw-bold';
+
 include '../partials/side-bar.php';
 
 
